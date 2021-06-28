@@ -1,8 +1,12 @@
+import { ISchedule } from "../model/ISchedule";
 import { ISchedulesRepository } from "../repositories/ISchedulesRepository"
 
 interface IRequest {
   title: string;
   owner_id: string;
+  active: boolean,
+  repeat: string;
+  tags: string[]
 }
 
 class CreateScheduleService {
@@ -11,7 +15,7 @@ class CreateScheduleService {
     
   }
 
-  execute({title, owner_id}: IRequest): void {
+  async execute({title, owner_id, active, repeat, tags}: IRequest): Promise<ISchedule> {
         
     const scheduleAlreadyExists = this.repository.findByTitle(title)
 
@@ -19,7 +23,9 @@ class CreateScheduleService {
       throw new Error("Schedule Already exists!")
     }
 
-    this.repository.create({title, owner_id})
+    const schedule = await this.repository.create({title, owner_id, active, repeat, tags})
+    
+    return schedule;
   }
 }
 

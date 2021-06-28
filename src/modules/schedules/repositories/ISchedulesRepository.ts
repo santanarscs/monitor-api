@@ -1,13 +1,21 @@
-import { Schedule } from "../model/Schedule";
+import { ISchedule } from "../model/ISchedule";
 
 interface ICreateScheduleDTO {
   title: string;
   owner_id: string;
+  repeat: string;
+  active: boolean,
+  tags: string[]
 }
+
+
 interface ISchedulesRepository {
-  findByTitle(name: string): Schedule;
-  list(): Schedule[]
-  create({title, owner_id}: ICreateScheduleDTO): void
+  findByTitle(title: string): Promise<ISchedule | undefined>
+  findById(id: string | any): Promise<ISchedule | undefined>;
+  list(): Promise<ISchedule[]>
+  create(data: ICreateScheduleDTO): Promise<ISchedule>
+  save(data: ISchedule): Promise<ISchedule>
+  delete(id: string): Promise<void>
 }
 
 export { ISchedulesRepository, ICreateScheduleDTO }
