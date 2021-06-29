@@ -1,6 +1,6 @@
 import { ISchedule } from 'modules/schedules/model/ISchedule';
 import { ICreateScheduleDTO, ISchedulesRepository } from 'modules/schedules/repositories/ISchedulesRepository';
-import { getMongoRepository, MongoRepository } from 'typeorm'
+import { getMongoRepository, MongoRepository, ObjectID } from 'typeorm'
 import { Schedule } from '../schemas/Schedule';
 
 class SchedulesRepository implements ISchedulesRepository {
@@ -8,6 +8,9 @@ class SchedulesRepository implements ISchedulesRepository {
 
   constructor() {
     this.ormRepository = getMongoRepository(Schedule)
+  }
+  async findByRepeat(repeat: string): Promise<ISchedule[]> {
+    return await this.ormRepository.find({repeat})
   }
   async findByTitle(title: string): Promise<ISchedule> {
     return await this.ormRepository.findOne({title})

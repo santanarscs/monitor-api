@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import { DeleteScheduleService } from '../modules/schedules/services/DeleteScheduleService'
 import { FindScheduleService } from '../modules/schedules/services/FindScheduleService'
 import { UpdateScheduleService } from '../modules/schedules/services/UpdateScheduleService'
-import { SchedulesRepository } from '../modules/schedules/infra/typeorm/repositories/SchemaRepository'
+import { SchedulesRepository } from '../modules/schedules/infra/typeorm/repositories/SchedulesRepository'
 import { CreateScheduleService } from '../modules/schedules/services/CreateScheduleService'
 import { ListScheduleService } from '../modules/schedules/services/ListSchedulesService'
 
