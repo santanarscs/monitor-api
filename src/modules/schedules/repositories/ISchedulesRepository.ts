@@ -11,7 +11,8 @@ interface ICreateScheduleDTO {
 
 interface ISchedulesRepository {
   findByTitle(title: string): Promise<ISchedule | undefined>
-  findById(id: string | any): Promise<ISchedule | undefined>;
+  findById(id: string | any): Promise<ISchedule | undefined>
+  findByRepeat(repeat: string): Promise<ISchedule[]>
   list(): Promise<ISchedule[]>
   create(data: ICreateScheduleDTO): Promise<ISchedule>
   save(data: ISchedule): Promise<ISchedule>

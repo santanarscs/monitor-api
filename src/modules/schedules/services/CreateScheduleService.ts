@@ -17,7 +17,7 @@ class CreateScheduleService {
 
   async execute({title, owner_id, active, repeat, tags}: IRequest): Promise<ISchedule> {
         
-    const scheduleAlreadyExists = this.repository.findByTitle(title)
+    const scheduleAlreadyExists = await this.repository.findByTitle(title)
 
     if(scheduleAlreadyExists) {
       throw new Error("Schedule Already exists!")
