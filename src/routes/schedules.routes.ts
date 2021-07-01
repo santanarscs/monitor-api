@@ -44,9 +44,9 @@ schedulesRoutes.post('/', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
   const createScheduleService = new CreateScheduleService(schedulesRepository)
   
-  const { title, owner_id, tags, type_schedule, active } = request.body
+  const { title, target, owner_id, tags, type_schedule, active } = request.body
 
-  const schedule = await createScheduleService.execute({title, owner_id, tags, type_schedule, active})
+  const schedule = await createScheduleService.execute({title, target, owner_id, tags, type_schedule, active})
   
   return response.status(201).json(schedule)
 })

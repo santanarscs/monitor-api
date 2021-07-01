@@ -10,6 +10,9 @@ class Schedule implements ISchedule {
   title: string;
 
   @Column()
+  target: string;
+
+  @Column()
   owner_id: string
 
   @Column()

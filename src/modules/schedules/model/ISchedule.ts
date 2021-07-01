@@ -5,6 +5,8 @@ interface ISchedule {
 
   title: string;
 
+  target: string;
+
   owner_id: string
 
   type_schedule: string

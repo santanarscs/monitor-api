@@ -2,6 +2,7 @@ import { ISchedule } from "../model/ISchedule";
 
 interface ICreateScheduleDTO {
   title: string;
+  target: string;
   owner_id: string;
   type_schedule: string;
   active: boolean,
