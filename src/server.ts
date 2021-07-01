@@ -1,18 +1,26 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 import AppError from './AppError';
 import { schedulesRoutes } from './routes/schedules.routes'
 import { jobsRoutes } from './routes/jobs.routes';
-
+import cors from 'cors'
 import './database';
 const app = express()
-
+app.use(cors())
 app.use(express.json())
 
 app.use("/schedules", schedulesRoutes)
 
 app.use('/jobs', jobsRoutes)
+
+app.get('/', (request, response) => {
+  return response.json({
+    "Api Status": 'Online',
+    "Api Version": process.env.API_VERSION
+  })
+})
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   if (err instanceof AppError) {
