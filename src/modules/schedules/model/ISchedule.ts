@@ -1,7 +1,7 @@
-import { ObjectID } from "typeorm";
+import { ITag } from "./ITag";
 
 interface ISchedule {
-  id: string | ObjectID;
+  id: string;
 
   title: string;
 
@@ -11,7 +11,7 @@ interface ISchedule {
 
   type_schedule: string
 
-  tags: string[]
+  tags: ITag[]
 
   active: boolean;
 

@@ -5,7 +5,8 @@ import { ListSchedulesByTypeService } from '../modules/schedules/services/ListSc
 import { RunDailyJobCongressService } from '../modules/schedules/services/RunDailyJobCongressService'
 import { FindScheduleService } from '../modules/schedules/services/FindScheduleService'
 import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
-import AppError from '../AppError'
+
+import { ListJobsByScheduleService } from '../modules/schedules/services/ListJobsByScheduleService'
 
 const jobsRoutes = Router()
 
@@ -41,6 +42,16 @@ jobsRoutes.get('/daily', async (request: Request, response: Response) => {
   const job = await runDailyJobService.execute(activeSchedules)
   
   return response.status(200).json(job)
+})
+
+jobsRoutes.get('/schedule/:schedule_id', async (request: Request, response: Response) => {
+  const jobsCongressRepository = new JobsCongressRepository()
+  const listJobsByScheduleIdService = new ListJobsByScheduleService(jobsCongressRepository)
+
+  const { schedule_id } = request.params
+
+  const jobs = await listJobsByScheduleIdService.execute(schedule_id)
+  return response.status(200).json(jobs)
 })
 
 export { jobsRoutes }

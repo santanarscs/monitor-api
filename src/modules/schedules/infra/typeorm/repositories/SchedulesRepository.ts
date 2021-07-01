@@ -1,13 +1,13 @@
-import { ISchedule } from 'modules/schedules/model/ISchedule';
-import { ICreateScheduleDTO, ISchedulesRepository } from 'modules/schedules/repositories/ISchedulesRepository';
-import { getMongoRepository, MongoRepository, ObjectID } from 'typeorm'
-import { Schedule } from '../schemas/Schedule';
+import { ISchedule } from '../../../model/ISchedule';
+import { ICreateScheduleDTO, ISchedulesRepository } from '../../../repositories/ISchedulesRepository';
+import { getRepository, Repository } from 'typeorm'
+import { Schedule } from '../entities/Schedule';
 
 class SchedulesRepository implements ISchedulesRepository {
-  private ormRepository: MongoRepository<Schedule>
+  private ormRepository: Repository<Schedule>
 
   constructor() {
-    this.ormRepository = getMongoRepository(Schedule)
+    this.ormRepository = getRepository(Schedule)
   }
   async findByTypeSchedule(type_schedule: string): Promise<ISchedule[]> {
     return await this.ormRepository.find({type_schedule})

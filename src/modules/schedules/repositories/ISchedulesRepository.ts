@@ -5,8 +5,6 @@ interface ICreateScheduleDTO {
   target: string;
   owner_id: string;
   type_schedule: string;
-  active: boolean,
-  tags: string[]
 }
 
 

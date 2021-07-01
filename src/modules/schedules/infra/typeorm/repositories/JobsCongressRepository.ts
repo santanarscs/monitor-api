@@ -1,13 +1,16 @@
-import { getMongoRepository, MongoRepository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { ICreateJobCongressDTO, IJobsCongressRepository } from '../../../repositories/IJobsCongressRepository'
-import { JobCongress } from '../schemas/JobCongress'
+import { JobCongress } from '../entities/JobCongress'
 
 class JobsCongressRepository implements IJobsCongressRepository {
 
-  private ormRepository: MongoRepository<JobCongress>
+  private ormRepository: Repository<JobCongress>
 
   constructor() {
-    this.ormRepository = getMongoRepository(JobCongress)
+    this.ormRepository = getRepository(JobCongress)
+  }
+  async findByScheduleId(schedule_id: string): Promise<JobCongress[]> {
+    return await this.ormRepository.find({schedule_id});
   }
 
   async findByText(text: string): Promise<JobCongress> {
@@ -37,7 +40,6 @@ class JobsCongressRepository implements IJobsCongressRepository {
   async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
-
 }
 
 export { JobsCongressRepository }

@@ -1,30 +1,18 @@
-import { ObjectID } from "typeorm";
-import { ISchedule } from "./ISchedule";
-
-
-interface IItem {
-  proposition_id: string;
-  
-  date_apresentation: Date;
-
-  text: string;
-  
-  author: string;
-  
-  link: string;
-  
-  status: string;
-}
 
 interface IJobCongress {
   
-  id: string | ObjectID;
-  
+  id: string;
+
+  title: string;
+ 
   date_job: Date;
 
-  schedule_id: string | ObjectID;
-  
-  items: IItem[]
+  schedule_id: string;
+ 
+  created_at: Date;
+
+  updated_at: Date;
+
 }
 
-export { IJobCongress, IItem }
+export { IJobCongress }
