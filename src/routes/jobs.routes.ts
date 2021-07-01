@@ -3,8 +3,28 @@ import { SchedulesRepository } from '../modules/schedules/infra/typeorm/reposito
 import { JobsCongressRepository } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepository'
 import { ListSchedulesByTypeService } from '../modules/schedules/services/ListSchedulesByTypeService'
 import { RunDailyJobCongressService } from '../modules/schedules/services/RunDailyJobCongressService'
+import { FindScheduleService } from '../modules/schedules/services/FindScheduleService'
+import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
+import AppError from '../AppError'
 
 const jobsRoutes = Router()
+
+jobsRoutes.post('/once', async (request: Request, response: Response) => {
+  const schedulesRepository = new SchedulesRepository()
+  const jobsCongressRepository = new JobsCongressRepository()
+  
+  const { schedule_id } = request.body
+  const findScheduleService = new FindScheduleService(schedulesRepository)
+  const schedule = await findScheduleService.execute(schedule_id)
+
+  if(schedule.target === 'camara_deputados') {
+    const runJobCongressService = new RunJobCongressService(jobsCongressRepository)
+    const job = await runJobCongressService.execute({schedule})
+    return response.status(200).json(job)
+  }
+
+  return response.status(304).send()
+})
 
 jobsRoutes.get('/daily', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
@@ -17,9 +37,9 @@ jobsRoutes.get('/daily', async (request: Request, response: Response) => {
 
   const activeSchedules = schedules.filter(schedule => schedule.active === true)
   
-  const items = await runDailyJobService.execute(activeSchedules)
+  const job = await runDailyJobService.execute(activeSchedules)
   
-  return response.status(200).json(items)
+  return response.status(200).json(job)
 })
 
 export { jobsRoutes }
