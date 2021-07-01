@@ -3,7 +3,7 @@ import { ISchedule } from "../model/ISchedule";
 interface ICreateScheduleDTO {
   title: string;
   owner_id: string;
-  repeat: string;
+  type_schedule: string;
   active: boolean,
   tags: string[]
 }
@@ -12,7 +12,7 @@ interface ICreateScheduleDTO {
 interface ISchedulesRepository {
   findByTitle(title: string): Promise<ISchedule | undefined>
   findById(id: string | any): Promise<ISchedule | undefined>
-  findByRepeat(repeat: string): Promise<ISchedule[]>
+  findByTypeSchedule(type_schedule: string): Promise<ISchedule[]>
   list(): Promise<ISchedule[]>
   create(data: ICreateScheduleDTO): Promise<ISchedule>
   save(data: ISchedule): Promise<ISchedule>

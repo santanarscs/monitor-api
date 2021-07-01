@@ -13,7 +13,7 @@ class Schedule implements ISchedule {
   owner_id: string
 
   @Column()
-  repeat: string
+  type_schedule: string
 
   @Column()
   tags: string[]

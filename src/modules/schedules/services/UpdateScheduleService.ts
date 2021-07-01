@@ -7,7 +7,7 @@ class IRequest {
   title: string;
   owner_id: string;
   active: boolean;
-  repeat: string;
+  type_schedule: string;
   tags: string[]
 }
 

@@ -1,5 +1,5 @@
 import { SchedulesRepository } from '../modules/schedules/infra/typeorm/repositories/SchedulesRepository'
-import { ListSchedulesByRepeatService } from '../modules/schedules/services/ListSchedulesByRepeatService'
+import { ListSchedulesByTypeService } from '../modules/schedules/services/ListSchedulesByTypeService'
 import * as cron from 'node-cron'
 import axios from 'axios'
 /**
@@ -14,9 +14,9 @@ import axios from 'axios'
 
 cron.schedule('* * * * *', async () => {
   const schedulesRepository = new SchedulesRepository()
-  const listScheduleByRepeatService = new ListSchedulesByRepeatService(schedulesRepository)
+  const listScheduleByTypeScheduleService = new ListSchedulesByTypeService(schedulesRepository)
 
-  const schedules = await listScheduleByRepeatService.execute('daily')
+  const schedules = await listScheduleByTypeScheduleService.execute('daily')
   
   const data = axios.get('https://dadosabertos.camara.leg.br/api/v2/proposicoes', {
     params: {

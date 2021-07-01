@@ -9,8 +9,8 @@ class SchedulesRepository implements ISchedulesRepository {
   constructor() {
     this.ormRepository = getMongoRepository(Schedule)
   }
-  async findByRepeat(repeat: string): Promise<ISchedule[]> {
-    return await this.ormRepository.find({repeat})
+  async findByTypeSchedule(type_schedule: string): Promise<ISchedule[]> {
+    return await this.ormRepository.find({type_schedule})
   }
   async findByTitle(title: string): Promise<ISchedule> {
     return await this.ormRepository.findOne({title})

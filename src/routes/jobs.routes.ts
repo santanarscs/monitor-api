@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { SchedulesRepository } from '../modules/schedules/infra/typeorm/repositories/SchedulesRepository'
 import { JobsCongressRepository } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepository'
-import { ListSchedulesByRepeatService } from '../modules/schedules/services/ListSchedulesByRepeatService'
+import { ListSchedulesByTypeService } from '../modules/schedules/services/ListSchedulesByTypeService'
 import { RunDailyJobCongressService } from '../modules/schedules/services/RunDailyJobCongressService'
 
 const jobsRoutes = Router()
@@ -10,10 +10,10 @@ jobsRoutes.get('/daily', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
   const jobsCongressRepository = new JobsCongressRepository()
   
-  const listScheduleByRepeatService = new ListSchedulesByRepeatService(schedulesRepository)
+  const listScheduleByTypeScheduleService = new ListSchedulesByTypeService(schedulesRepository)
   const runDailyJobService = new RunDailyJobCongressService(jobsCongressRepository)
   
-  const schedules = await listScheduleByRepeatService.execute('daily')
+  const schedules = await listScheduleByTypeScheduleService.execute('daily')
 
   const activeSchedules = schedules.filter(schedule => schedule.active === true)
   

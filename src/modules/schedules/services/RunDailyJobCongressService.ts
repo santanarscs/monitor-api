@@ -36,7 +36,7 @@ class RunDailyJobCongressService {
             date_job: new Date(),
             tags: schedule.tags || [],
             owner_id: schedule.owner_id,
-            type_job: schedule.repeat,
+            type_job: schedule.type_schedule,
             items: []
           }
         }
@@ -58,7 +58,7 @@ class RunDailyJobCongressService {
           date_job: new Date(),
           tags: schedule.tags,
           owner_id: schedule.owner_id,
-          type_job: schedule.repeat,
+          type_job: schedule.type_schedule,
 
           items: data.dados.map(item => ({
             proposition_id: item.id,

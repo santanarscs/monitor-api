@@ -13,9 +13,9 @@ schedulesRoutes.put('/:id', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
   const updateScheduleRepository = new UpdateScheduleService(schedulesRepository)
   const { id } = request.params;
-  const { title, owner_id, tags, repeat, active } = request.body
+  const { title, owner_id, tags, type_schedule, active } = request.body
 
-  const schedule = await updateScheduleRepository.execute({id, title, owner_id, tags, repeat, active})
+  const schedule = await updateScheduleRepository.execute({id, title, owner_id, tags, type_schedule, active})
   
   return response.status(201).json(schedule)
 })
@@ -44,9 +44,9 @@ schedulesRoutes.post('/', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
   const createScheduleService = new CreateScheduleService(schedulesRepository)
   
-  const { title, owner_id, tags, repeat, active } = request.body
+  const { title, owner_id, tags, type_schedule, active } = request.body
 
-  const schedule = await createScheduleService.execute({title, owner_id, tags, repeat, active})
+  const schedule = await createScheduleService.execute({title, owner_id, tags, type_schedule, active})
   
   return response.status(201).json(schedule)
 })

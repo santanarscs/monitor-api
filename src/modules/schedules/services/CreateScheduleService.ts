@@ -5,7 +5,7 @@ interface IRequest {
   title: string;
   owner_id: string;
   active: boolean,
-  repeat: string;
+  type_schedule: string;
   tags: string[]
 }
 
@@ -15,7 +15,7 @@ class CreateScheduleService {
     
   }
 
-  async execute({title, owner_id, active, repeat, tags}: IRequest): Promise<ISchedule> {
+  async execute({title, owner_id, active, type_schedule, tags}: IRequest): Promise<ISchedule> {
         
     const scheduleAlreadyExists = await this.repository.findByTitle(title)
 
@@ -23,7 +23,7 @@ class CreateScheduleService {
       throw new Error("Schedule Already exists!")
     }
 
-    const schedule = await this.repository.create({title, owner_id, active, repeat, tags})
+    const schedule = await this.repository.create({title, owner_id, active, type_schedule, tags})
     
     return schedule;
   }

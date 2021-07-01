@@ -7,7 +7,7 @@ interface ISchedule {
 
   owner_id: string
 
-  repeat: string
+  type_schedule: string
 
   tags: string[]
 
