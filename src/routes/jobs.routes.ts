@@ -20,6 +20,7 @@ jobsRoutes.post('/once', async (request: Request, response: Response) => {
   if(schedule.target === 'camara_deputados') {
     const runJobCongressService = new RunJobCongressService(jobsCongressRepository)
     const job = await runJobCongressService.execute({schedule})
+
     return response.status(200).json(job)
   }
 

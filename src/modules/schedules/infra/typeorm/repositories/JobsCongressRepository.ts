@@ -1,6 +1,6 @@
 import { getMongoRepository, MongoRepository } from 'typeorm';
 import { ICreateJobCongressDTO, IJobsCongressRepository } from '../../../repositories/IJobsCongressRepository'
-import { JobCongress, Item } from '../schemas/JobCongress'
+import { JobCongress } from '../schemas/JobCongress'
 
 class JobsCongressRepository implements IJobsCongressRepository {
 

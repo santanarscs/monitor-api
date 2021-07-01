@@ -42,10 +42,7 @@ class RunJobCongressService {
     if(!schedule.tags) {
       const job = {
         date_job: new Date(),
-        target: schedule.target,
-        tags: schedule.tags || [],
-        owner_id: schedule.owner_id,
-        type_job: schedule.type_schedule,
+        schedule_id: schedule.id,
         items: []
       }
       return await this.repository.create(job)
@@ -65,10 +62,7 @@ class RunJobCongressService {
 
     const job = {
       date_job: new Date(),
-      tags: schedule.tags,
-      owner_id: schedule.owner_id,
-      type_job: schedule.type_schedule,
-
+      schedule_id: schedule.id,
       items: data.dados.map(item => ({
         proposition_id: item.id,
         date_apresentation: '',

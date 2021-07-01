@@ -1,4 +1,5 @@
 import { ObjectID } from "typeorm";
+import { ISchedule } from "./ISchedule";
 
 
 interface IItem {
@@ -19,14 +20,10 @@ interface IJobCongress {
   
   id: string | ObjectID;
   
-  tags: string[]
-
   date_job: Date;
 
-  owner_id: string;
+  schedule_id: string | ObjectID;
   
-  type_job: string;
-
   items: IItem[]
 }
 

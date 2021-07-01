@@ -2,43 +2,6 @@ import { IJobCongress, IItem } from "../../../model/IJobCongress";
 import { Column, CreateDateColumn, Entity, ObjectID, ObjectIdColumn, UpdateDateColumn } from "typeorm";
 
 
-class Item implements IItem {
-  @Column()
-  proposition_id: string;
-  
-  @Column()
-  date_apresentation: Date;
-
-  @Column()
-  text: string;
-  
-  @Column()
-  author: string;
-  
-  @Column()
-  link: string;
-  
-  @Column()
-  status: string;
-
-  constructor(
-    proposition_id: string,
-    date_apresentation: Date,
-    text: string,
-    author: string,
-    link: string,
-    status: string,
-    ) {
-      this.proposition_id = proposition_id
-      this.date_apresentation = date_apresentation
-      this.text = text
-      this.author = author
-      this.link = link
-      this.status = status
-    }
-}
-
-
 @Entity('jobs_congress')
 class JobCongress implements IJobCongress {
   
@@ -58,7 +21,10 @@ class JobCongress implements IJobCongress {
   tags: string[]
 
   @Column()
-  items: Item[]
+  items: IItem[]
+
+  @Column('uuid')
+  schedule_id: string | ObjectID;
   
   @CreateDateColumn()
   created_at: Date;
@@ -68,4 +34,4 @@ class JobCongress implements IJobCongress {
 
 }
 
-export { JobCongress, Item }
+export { JobCongress }

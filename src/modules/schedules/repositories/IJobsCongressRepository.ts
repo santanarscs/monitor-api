@@ -1,11 +1,10 @@
+import { ObjectID } from "typeorm";
 import { IJobCongress, IItem } from "../model/IJobCongress";
 
 interface ICreateJobCongressDTO {
   date_job: Date;
 
-  owner_id: string;
-  
-  type_job: string;
+  schedule_id: string | ObjectID;
 
   items: IItem[]
 }
