@@ -5,9 +5,9 @@ import { UpdateScheduleService } from '../modules/schedules/services/UpdateSched
 import { SchedulesRepository } from '../modules/schedules/infra/typeorm/repositories/SchedulesRepository'
 import { CreateScheduleService } from '../modules/schedules/services/CreateScheduleService'
 import { ListScheduleService } from '../modules/schedules/services/ListSchedulesService'
+import { TagsRepository } from '../modules/schedules/infra/typeorm/repositories/TagsRepository'
 
 const schedulesRoutes = Router()
-
 
 schedulesRoutes.put('/:id', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
@@ -42,11 +42,12 @@ schedulesRoutes.get('/:id', async (request: Request, response: Response) => {
 
 schedulesRoutes.post('/', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
-  const createScheduleService = new CreateScheduleService(schedulesRepository)
+  const tagsRepository = new TagsRepository()
+  const createScheduleService = new CreateScheduleService(schedulesRepository, tagsRepository)
   
-  const { title, target, owner_id, tags, type_schedule, active } = request.body
+  const { title, target, owner_id, tags, type_schedule } = request.body
 
-  const schedule = await createScheduleService.execute({title, target, owner_id, tags, type_schedule, active})
+  const schedule = await createScheduleService.execute({title, target, owner_id, tags, type_schedule})
   
   return response.status(201).json(schedule)
 })

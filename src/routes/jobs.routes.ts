@@ -7,19 +7,21 @@ import { FindScheduleService } from '../modules/schedules/services/FindScheduleS
 import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
 
 import { ListJobsByScheduleService } from '../modules/schedules/services/ListJobsByScheduleService'
+import { ItemsJobCongressRepository } from '../modules/schedules/infra/typeorm/repositories/ItemsJobCongressRepository'
 
 const jobsRoutes = Router()
 
 jobsRoutes.post('/once', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
   const jobsCongressRepository = new JobsCongressRepository()
+  const itemsJobCongressRepository = new ItemsJobCongressRepository()
   
   const { schedule_id } = request.body
   const findScheduleService = new FindScheduleService(schedulesRepository)
   const schedule = await findScheduleService.execute(schedule_id)
 
   if(schedule.target === 'camara_deputados') {
-    const runJobCongressService = new RunJobCongressService(jobsCongressRepository)
+    const runJobCongressService = new RunJobCongressService(jobsCongressRepository, itemsJobCongressRepository)
     const job = await runJobCongressService.execute({schedule})
 
     return response.status(200).json(job)
