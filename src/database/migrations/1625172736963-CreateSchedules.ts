@@ -31,7 +31,8 @@ export default class CreateSchedules1625172736963 implements MigrationInterface 
           },
           {
             name: "active",
-            type: 'boolean'
+            type: 'boolean',
+            default: true,
           },
           {
             name: 'created_at',

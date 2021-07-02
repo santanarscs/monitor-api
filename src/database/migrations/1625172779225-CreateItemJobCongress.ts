@@ -25,6 +25,7 @@ export default class CreateItemJobCongress1625172779225 implements MigrationInte
           {
             name: "date_apresentation",
             type: 'timestamp with time zone',
+            isNullable: true
           },
           {
             name: "text",

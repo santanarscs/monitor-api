@@ -15,10 +15,6 @@ export default class CreateJobCongress1625172772472 implements MigrationInterfac
             default: 'uuid_generate_v4()',
           },
           {
-            name: "title",
-            type: "varchar"
-          },
-          {
             name: "date_job",
             type: 'timestamp with time zone',
           },
