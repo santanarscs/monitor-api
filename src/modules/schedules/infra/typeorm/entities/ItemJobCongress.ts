@@ -31,7 +31,7 @@ class ItemJobCongress implements IItemJobCongress{
   @Column()
   job_congress_id: string
 
-  @ManyToOne(() => JobCongress, {eager: true})
+  @ManyToOne(() => JobCongress)
   @JoinColumn({name: 'job_congress_id'})
   job_congres: JobCongress
   

@@ -2,8 +2,6 @@
 interface IJobCongress {
   
   id: string;
-
-  title: string;
  
   date_job: Date;
 

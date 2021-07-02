@@ -21,7 +21,7 @@ class Schedule implements ISchedule {
   @Column()
   type_schedule: string;
   
-  @OneToMany(() => Tag, tags => tags.schedule)
+  @OneToMany(() => Tag, tags => tags.schedule, {eager: true})
   tags: Tag[];
   
   @Column({default: true})

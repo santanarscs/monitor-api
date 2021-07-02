@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Schedule } from "./Schedule";
 import { ItemJobCongress } from "./ItemJobCongress";
 import { IJobCongress } from "../../../model/IJobCongress";
@@ -9,9 +9,6 @@ class JobCongress implements IJobCongress{
 
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column()
-  title: string;
  
   @Column('time with time zone')
   date_job: Date;
@@ -20,9 +17,10 @@ class JobCongress implements IJobCongress{
   schedule_id: string;
  
   @ManyToOne(() => Schedule, {eager: true})
+  @JoinColumn({name: 'schedule_id'})
   schedule: Schedule
   
-  @OneToMany(() => ItemJobCongress, items => items.job_congres)
+  @OneToMany(() => ItemJobCongress, items => items.job_congres, {eager: true})
   items: ItemJobCongress[]
 
   @CreateDateColumn()

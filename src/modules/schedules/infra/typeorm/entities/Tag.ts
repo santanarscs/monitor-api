@@ -14,7 +14,7 @@ class Tag implements ITag {
   @Column()
   schedule_id: string
 
-  @ManyToOne(() => Schedule, {eager: true})
+  @ManyToOne(() => Schedule)
   @JoinColumn({name: 'schedule_id'})
   schedule: Schedule;
 
