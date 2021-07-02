@@ -37,7 +37,7 @@ class CreateScheduleService {
       .filter(tag => !existsTagsTitle.includes(tag))
       .filter((value, index, self) => self.indexOf(value) === index)
 
-    await this.tagsRepository.create(addTags.map(tag => ({
+    await this.tagsRepository.createMany(addTags.map(tag => ({
       name: tag,
       schedule_id: schedule.id
     })))

@@ -4,13 +4,17 @@ import { ISchedule } from "../model/ISchedule";
 import { IJobsCongressRepository } from "../repositories/IJobsCongressRepository";
 import qs from 'qs'
 import { format } from 'date-fns'
+import { IItemsJobCongressRepository } from "../repositories/IItemsJobCongressRepository";
+
 interface IRequest {
   schedule:ISchedule,
 }
 
-
 class RunJobCongressService {
-  constructor(private repository: IJobsCongressRepository){}
+  constructor(
+    private repository: IJobsCongressRepository,
+    private itemsJobCongress: IItemsJobCongressRepository
+    ){}
 
 
   private defineRangeDate(type_schedule: string): {initialDate: string, finishDate: string} {
@@ -43,7 +47,6 @@ class RunJobCongressService {
       const job = {
         date_job: new Date(),
         schedule_id: schedule.id,
-        items: []
       }
       return await this.repository.create(job)
     }
@@ -53,7 +56,7 @@ class RunJobCongressService {
       params: {
         dataApresentacaoInicio: initialDate,
         dataApresentacaoFim: finishDate,
-        keywords: schedule.tags
+        keywords: schedule.tags.map(tag => tag.name)
       },
       paramsSerializer: (params) => {
         return qs.stringify(params, {indices: false})
@@ -63,16 +66,23 @@ class RunJobCongressService {
     const job = {
       date_job: new Date(),
       schedule_id: schedule.id,
-      items: data.dados.map(item => ({
-        proposition_id: item.id,
-        date_apresentation: '',
-        text: item.ementa,
-        author: '',
-        link: '',
-        status: ''
-      }))
     }
-    return await this.repository.create(job)
+    const createdJob = await this.repository.create(job)
+
+    const items = data.dados.map(item => ({
+      proposition_id: item.id,
+      date_apresentation: null,
+      type_proposition: '',
+      text: item.ementa,
+      author: '',
+      link: '',
+      status: '',
+      job_congress_id: createdJob.id
+    }))
+
+    await this.itemsJobCongress.createMany(items)
+
+    return await this.repository.create(createdJob)
 
   }
 }

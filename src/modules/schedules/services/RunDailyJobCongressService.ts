@@ -71,8 +71,8 @@ class RunDailyJobCongressService {
         }
       })
     )
-    const jobs = await this.jobCongressRepository.createMany(items)
-    return jobs;
+    // const jobs = await this.jobCongressRepository.createMany(items)
+    return items;
   }
 }
 
