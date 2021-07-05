@@ -1,5 +1,5 @@
 import { ISchedule } from '../../../model/ISchedule';
-import { ICreateScheduleDTO, ISchedulesRepository } from '../../../repositories/ISchedulesRepository';
+import { ICreateScheduleDTO, IFindScheduleDTO, ISchedulesRepository } from '../../../repositories/ISchedulesRepository';
 import { getRepository, Repository } from 'typeorm'
 import { Schedule } from '../entities/Schedule';
 
@@ -26,9 +26,16 @@ class SchedulesRepository implements ISchedulesRepository {
     await this.ormRepository.delete(id)
   }
   
-  async list(): Promise<Schedule[]> {
-    const schedules = await this.ormRepository.find()
+  async list({page, limit}: IFindScheduleDTO): Promise<[Schedule[], number]> {
+    
+    const query = this.ormRepository.createQueryBuilder('schedules')
+
+    if(page && limit) {
+      query.skip(Number((page - 1) * limit)).take(limit);
+    }
+    const schedules = await query.getManyAndCount();
     return schedules;
+
   }
   async create(data: ICreateScheduleDTO): Promise<Schedule> {
     const schedule = this.ormRepository.create(data)

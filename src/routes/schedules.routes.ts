@@ -53,10 +53,17 @@ schedulesRoutes.post('/', async (request: Request, response: Response) => {
 })
 
 schedulesRoutes.get('/', async (request: Request, response: Response) => {
+
+  const { page, limit } = request.query
+
   const schedulesRepository = new SchedulesRepository()
   const listScheduleService = new ListScheduleService(schedulesRepository)
 
-  const schedules = await listScheduleService.execute()
+  const [schedules, total] = await listScheduleService.execute({
+    page: Number(page),
+    limit: Number(limit)
+  })
+  response.header('x-total-count', String(total));
 
   return response.status(200).json(schedules)
 })
