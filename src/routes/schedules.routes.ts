@@ -11,11 +11,12 @@ const schedulesRoutes = Router()
 
 schedulesRoutes.put('/:id', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
-  const updateScheduleRepository = new UpdateScheduleService(schedulesRepository)
+  const tagsRepository = new TagsRepository()
+  const updateScheduleRepository = new UpdateScheduleService(schedulesRepository, tagsRepository)
   const { id } = request.params;
-  const { title, owner_id, tags, type_schedule, active } = request.body
+  const { title, target, tags, type_schedule, active } = request.body
 
-  const schedule = await updateScheduleRepository.execute({id, title, owner_id, tags, type_schedule, active})
+  const schedule = await updateScheduleRepository.execute({id, title, target, tags, type_schedule, active})
   
   return response.status(201).json(schedule)
 })
@@ -54,14 +55,15 @@ schedulesRoutes.post('/', async (request: Request, response: Response) => {
 
 schedulesRoutes.get('/', async (request: Request, response: Response) => {
 
-  const { page, limit } = request.query
+  const { page, limit, owner_id } = request.query
 
   const schedulesRepository = new SchedulesRepository()
   const listScheduleService = new ListScheduleService(schedulesRepository)
 
   const [schedules, total] = await listScheduleService.execute({
     page: Number(page),
-    limit: Number(limit)
+    limit: Number(limit),
+    owner_id: String(owner_id)
   })
   response.header('x-total-count', String(total));
 
