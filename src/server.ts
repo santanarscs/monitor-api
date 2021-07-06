@@ -5,6 +5,7 @@ import 'express-async-errors';
 import AppError from './AppError';
 import { schedulesRoutes } from './routes/schedules.routes'
 import { jobsRoutes } from './routes/jobs.routes';
+import { tagsRoutes } from './routes/tags.routes';
 import cors from 'cors'
 import './database';
 const app = express()
@@ -16,6 +17,8 @@ app.use(express.json())
 app.use("/schedules", schedulesRoutes)
 
 app.use('/jobs', jobsRoutes)
+
+app.use('/tags', tagsRoutes)
 
 app.get('/', (request, response) => {
   return response.json({
