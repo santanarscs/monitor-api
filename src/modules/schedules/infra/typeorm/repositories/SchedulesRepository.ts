@@ -26,9 +26,13 @@ class SchedulesRepository implements ISchedulesRepository {
     await this.ormRepository.delete(id)
   }
   
-  async list({page, limit}: IFindScheduleDTO): Promise<[Schedule[], number]> {
+  async list({page, limit, owner_id}: IFindScheduleDTO): Promise<[Schedule[], number]> {
     
     const query = this.ormRepository.createQueryBuilder('schedules')
+
+    if(owner_id) {
+      query.andWhere('owner_id = :owner_id', { owner_id });
+    }
 
     if(page && limit) {
       query.skip(Number((page - 1) * limit)).take(limit);

@@ -10,6 +10,7 @@ interface ICreateScheduleDTO {
 interface IFindScheduleDTO {
   page?: number;
   limit?: number;
+  owner_id?: string
 }
 
 
