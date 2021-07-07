@@ -15,15 +15,16 @@ import { ItemsJobCongressRepository } from '../modules/schedules/infra/typeorm/r
 */
 
 
-cron.schedule('0 17 * * *', async () => {
+cron.schedule('0 17 30 * *', async () => {
   console.log('iniciando processo!!')
   const schedulesRepository = new SchedulesRepository()
   const jobsCongressRepository = new JobsCongressRepository()
   const itemsJobsCongressRepository = new ItemsJobCongressRepository()
   const listScheduleByTypeScheduleService = new ListSchedulesByTypeService(schedulesRepository)
   const runJobCongress = new RunJobCongressService(jobsCongressRepository, itemsJobsCongressRepository)
-  const schedules = await listScheduleByTypeScheduleService.execute('daily')
-  if(schedules){
+  const schedules = await listScheduleByTypeScheduleService.execute('monthly')
+
+  if(schedules) {
     await Promise.all(
       schedules.map(async (schedule) => {
         if(schedule.target === 'camara_deputados') {

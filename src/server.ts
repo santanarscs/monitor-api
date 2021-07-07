@@ -8,6 +8,11 @@ import { jobsRoutes } from './routes/jobs.routes';
 import { tagsRoutes } from './routes/tags.routes';
 import cors from 'cors'
 import './database';
+
+import './jobs/daily'
+import './jobs/monthly'
+import './jobs/weekly'
+
 const app = express()
 app.use(cors({
   exposedHeaders: ['x-total-count'],
@@ -19,6 +24,8 @@ app.use("/schedules", schedulesRoutes)
 app.use('/jobs', jobsRoutes)
 
 app.use('/tags', tagsRoutes)
+
+
 
 app.get('/', (request, response) => {
   return response.json({
