@@ -3,7 +3,7 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 import { ISchedule } from "../model/ISchedule";
 import { IJobsCongressRepository } from "../repositories/IJobsCongressRepository";
 import qs from 'qs'
-import { format } from 'date-fns'
+import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 import { IItemsJobCongressRepository } from "../repositories/IItemsJobCongressRepository";
 
 interface IRequest {
@@ -22,11 +22,14 @@ class RunJobCongressService {
     let finishDate = format(new Date(), 'yyyy-MM-dd')
     
     if(type_schedule === 'weekly') {
-
+      initialDate = format(startOfWeek(new Date()), 'yyyy-MM-dd')
+      finishDate = format(endOfWeek(new Date()), 'yyyy-MM-dd')
     }
     if(type_schedule === 'monthly') {
-
+      initialDate = format(startOfMonth(new Date()), 'yyyy-MM-dd')
+      finishDate = format(endOfMonth(new Date()), 'yyyy-MM-dd')
     }
+    console.log(initialDate, finishDate)
 
     return {
       initialDate,
