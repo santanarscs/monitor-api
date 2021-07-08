@@ -49,4 +49,4 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   });
 });
 
-app.listen(process.env.API_PORT, () => console.log('Server is running'))
+app.listen(process.env.API_PORT, () => console.log(`Server is running in ${process.env.NODE_ENV}`))
