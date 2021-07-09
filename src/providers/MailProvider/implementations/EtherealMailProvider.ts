@@ -1,10 +1,11 @@
 import nodemailer, { Transporter } from 'nodemailer'
+import { HandlebarsMailTemplateProvider } from '../../MailTemplateProvider/implementations/HandlebarsMailTemplateProvider';
 import { IMailProvider, ISendMailDTO } from "../models/IMailProvider";
 
 class EtherealMailProvider implements IMailProvider {
   private client: Transporter;
 
-  constructor() {
+  constructor(private mailTemplateProvider: HandlebarsMailTemplateProvider) {
     nodemailer.createTestAccount().then(account => {
       const transporter = nodemailer.createTransport({
         host: account.smtp.host,
@@ -30,7 +31,7 @@ class EtherealMailProvider implements IMailProvider {
         address: data.to.email
       },
       subject: data.subject,
-      html: '<b>Teste</b>'
+      html: await this.mailTemplateProvider.parse(data.templateData),
     })
     console.log(`Message sent: ${message.messageId}`)
     console.log(`Preview URL: ${nodemailer.getTestMessageUrl(message)}`)

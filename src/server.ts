@@ -9,6 +9,8 @@ import { tagsRoutes } from './routes/tags.routes';
 import cors from 'cors'
 import './database';
 
+import './providers/MailProvider'
+
 import './jobs/daily'
 import './jobs/monthly'
 import './jobs/weekly'
