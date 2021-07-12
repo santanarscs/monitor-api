@@ -8,6 +8,8 @@ import { RunJobCongressService } from '../modules/schedules/services/RunJobCongr
 
 import { ListJobsByScheduleService } from '../modules/schedules/services/ListJobsByScheduleService'
 import { ItemsJobCongressRepository } from '../modules/schedules/infra/typeorm/repositories/ItemsJobCongressRepository'
+import { EtherealMailProvider } from '../providers/MailProvider/implementations/EtherealMailProvider'
+import { HandlebarsMailTemplateProvider } from '../providers/MailTemplateProvider/implementations/HandlebarsMailTemplateProvider'
 
 const jobsRoutes = Router()
 
@@ -15,13 +17,15 @@ jobsRoutes.post('/once', async (request: Request, response: Response) => {
   const schedulesRepository = new SchedulesRepository()
   const jobsCongressRepository = new JobsCongressRepository()
   const itemsJobCongressRepository = new ItemsJobCongressRepository()
+  const mailTemplateProvider = new HandlebarsMailTemplateProvider()
+  const mailProvider = new EtherealMailProvider(mailTemplateProvider)
   
   const { schedule_id } = request.body
   const findScheduleService = new FindScheduleService(schedulesRepository)
   const schedule = await findScheduleService.execute(schedule_id)
 
-  if(schedule.target === 'camara_deputados') {
-    const runJobCongressService = new RunJobCongressService(jobsCongressRepository, itemsJobCongressRepository)
+  if(schedule?.target === 'camara_deputados') {
+    const runJobCongressService = new RunJobCongressService(jobsCongressRepository, itemsJobCongressRepository, mailProvider)
     const job = await runJobCongressService.execute({schedule})
 
     return response.status(200).json(job)

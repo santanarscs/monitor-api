@@ -5,7 +5,8 @@ import { IJobsCongressRepository } from "../repositories/IJobsCongressRepository
 import qs from 'qs'
 import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 import { IItemsJobCongressRepository } from "../repositories/IItemsJobCongressRepository";
-
+import { IMailProvider } from "../../../providers/MailProvider/models/IMailProvider";
+import path from 'path';
 interface IRequest {
   schedule:ISchedule,
 }
@@ -13,7 +14,8 @@ interface IRequest {
 class RunJobCongressService {
   constructor(
     private repository: IJobsCongressRepository,
-    private itemsJobCongress: IItemsJobCongressRepository
+    private itemsJobCongress: IItemsJobCongressRepository,
+    private mailProvider: IMailProvider
     ){}
 
 
@@ -72,7 +74,7 @@ class RunJobCongressService {
     }
     const createdJob = await this.repository.create(job)
 
-    const items = data.dados.map(item => ({
+    const items = data.dados.map((item: any) => ({
       proposition_id: item.id,
       date_apresentation: null,
       type_proposition: '',
@@ -84,6 +86,27 @@ class RunJobCongressService {
     }))
 
     await this.itemsJobCongress.createMany(items)
+
+    const file = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'job_statistic.hbs',
+    );
+
+    await this.mailProvider.sendMail({
+      subject: "Teste",
+      to: {
+        email: 'raphaelstn@gmail.com',
+        name: 'Raphael Santana'
+      },
+      templateData: {
+        file,
+        variables: {
+          name: 'Teste'
+        }
+      }
+    })
 
     return await this.repository.create(createdJob)
 
