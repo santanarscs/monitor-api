@@ -6,6 +6,8 @@ import AppError from './AppError';
 import { schedulesRoutes } from './routes/schedules.routes'
 import { jobsRoutes } from './routes/jobs.routes';
 import { tagsRoutes } from './routes/tags.routes';
+import { representativesRoutes } from './routes/representatives.routes';
+
 import cors from 'cors'
 import './database';
 
@@ -26,6 +28,8 @@ app.use("/schedules", schedulesRoutes)
 app.use('/jobs', jobsRoutes)
 
 app.use('/tags', tagsRoutes)
+
+app.use('/representatives', representativesRoutes)
 
 
 
