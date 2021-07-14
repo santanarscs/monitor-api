@@ -5,6 +5,8 @@ import * as cron from 'node-cron'
 import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
 import { JobsCongressRepository } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepository'
 import { ItemsJobCongressRepository } from '../modules/schedules/infra/typeorm/repositories/ItemsJobCongressRepository'
+import { HandlebarsMailTemplateProvider } from '../providers/MailTemplateProvider/implementations/HandlebarsMailTemplateProvider'
+import { EtherealMailProvider } from '../providers/MailProvider/implementations/EtherealMailProvider'
 /**
    * 1. buscar todos os agendamentos diarios
    * 2. realizar um request do dia
@@ -20,8 +22,10 @@ cron.schedule('0 17 * * *', async () => {
   const schedulesRepository = new SchedulesRepository()
   const jobsCongressRepository = new JobsCongressRepository()
   const itemsJobsCongressRepository = new ItemsJobCongressRepository()
+  const mailTemplateProvider = new HandlebarsMailTemplateProvider()
+  const mailProvider = new EtherealMailProvider(mailTemplateProvider)
   const listScheduleByTypeScheduleService = new ListSchedulesByTypeService(schedulesRepository)
-  const runJobCongress = new RunJobCongressService(jobsCongressRepository, itemsJobsCongressRepository)
+  const runJobCongress = new RunJobCongressService(jobsCongressRepository, itemsJobsCongressRepository, mailProvider)
   const schedules = await listScheduleByTypeScheduleService.execute('daily')
   if(schedules){
     await Promise.all(
