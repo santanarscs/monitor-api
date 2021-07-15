@@ -7,7 +7,7 @@ import { schedulesRoutes } from './routes/schedules.routes'
 import { jobsRoutes } from './routes/jobs.routes';
 import { tagsRoutes } from './routes/tags.routes';
 import { representativesRoutes } from './routes/representatives.routes';
-
+import uploadConfig from './config/upload'
 import cors from 'cors'
 import './database';
 
@@ -22,6 +22,7 @@ app.use(cors({
   exposedHeaders: ['x-total-count'],
 }))
 app.use(express.json())
+app.use('/files', express.static(uploadConfig.uploadsFolder));
 
 app.use("/schedules", schedulesRoutes)
 
