@@ -10,6 +10,8 @@ import { ListJobsByScheduleService } from '../modules/schedules/services/ListJob
 import { ItemsJobCongressRepository } from '../modules/schedules/infra/typeorm/repositories/ItemsJobCongressRepository'
 import { EtherealMailProvider } from '../providers/MailProvider/implementations/EtherealMailProvider'
 import { HandlebarsMailTemplateProvider } from '../providers/MailTemplateProvider/implementations/HandlebarsMailTemplateProvider'
+import { GenerateJobReportDocumentService } from '../modules/schedules/services/GenerateJobReportDocumentService'
+import { FindJobService } from '../modules/schedules/services/FindJobService'
 
 const jobsRoutes = Router()
 
@@ -58,6 +60,17 @@ jobsRoutes.get('/schedule/:schedule_id', async (request: Request, response: Resp
 
   const jobs = await listJobsByScheduleIdService.execute(schedule_id)
   return response.status(200).json(jobs)
+})
+
+jobsRoutes.get('/:id/export_docx', async (request:Request, response: Response) => {
+  const generateJobReportDocumentService = new GenerateJobReportDocumentService()
+  const {id} = request.params
+  const jobsCongressRepository = new JobsCongressRepository()
+  const findJobCongressService = new FindJobService(jobsCongressRepository) 
+  const job = await findJobCongressService.execute(id)
+  const urlDocument = await generateJobReportDocumentService.execute(job)
+
+  return response.json(urlDocument)
 })
 
 export { jobsRoutes }
