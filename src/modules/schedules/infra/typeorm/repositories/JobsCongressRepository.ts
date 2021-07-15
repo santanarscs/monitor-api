@@ -16,7 +16,7 @@ class JobsCongressRepository implements IJobsCongressRepository {
   async findByText(text: string): Promise<JobCongress> {
     throw new Error('remove method')
   }
-  async findById(id: any): Promise<JobCongress> {
+  async findById(id: string): Promise<JobCongress | undefined> {
     return await this.ormRepository.findOne(id)
   }
   async list(): Promise<JobCongress[]> {

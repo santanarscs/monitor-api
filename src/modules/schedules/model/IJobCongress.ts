@@ -1,3 +1,4 @@
+import { IItemJobCongress } from "./IItemJobCongress";
 
 interface IJobCongress {
   
@@ -6,6 +7,8 @@ interface IJobCongress {
   date_job: Date;
 
   schedule_id: string;
+  
+  items: IItemJobCongress[]
  
   created_at: Date;
 
