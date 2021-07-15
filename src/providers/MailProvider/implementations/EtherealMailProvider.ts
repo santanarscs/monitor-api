@@ -10,10 +10,13 @@ class EtherealMailProvider implements IMailProvider {
       const transporter = nodemailer.createTransport({
         host: process.env.MAIL_HOST,
         port: process.env.MAIL_PORT,
-        secure: true, // use TLS
+        secure: false,
         auth: {
-          user: "",
-          pass: ""
+          user: process.env.MAIL_USERNAME,
+          pass: process.env.MAIL_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: false
         }
       });
       this.client = transporter
@@ -38,8 +41,8 @@ class EtherealMailProvider implements IMailProvider {
   async sendMail(data: ISendMailDTO): Promise<void> {
     const message = await this.client.sendMail({
       from: {
-        name: data.frrom?.name || 'Robomonitor',
-        address: data.frrom?.email || 'robo@monitor.com'
+        name: 'CIGEO',
+        address: process.env.MAIL_FROM_ADDRESS as string
       },
       to: {
         name: data.to.name,
@@ -47,6 +50,7 @@ class EtherealMailProvider implements IMailProvider {
       },
       subject: data.subject,
       html: await this.mailTemplateProvider.parse(data.templateData),
+      attachments: data.attachments
     })
     console.log(`Message sent: ${message.messageId}`)
     console.log(`Preview URL: ${nodemailer.getTestMessageUrl(message)}`)
