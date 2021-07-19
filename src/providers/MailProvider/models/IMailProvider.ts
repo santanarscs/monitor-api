@@ -10,6 +10,7 @@ interface ISendMailDTO {
   frrom?: IMailContact;
   subject: string;
   templateData: any
+  attachments?: any[]
 }
 
 interface IMailProvider {
