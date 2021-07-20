@@ -12,7 +12,7 @@ class SchedulesRepository implements ISchedulesRepository {
   async findByTypeSchedule(type_schedule: string): Promise<ISchedule[]> {
     return await this.ormRepository.find({type_schedule})
   }
-  async findByTitle(title: string): Promise<ISchedule> {
+  async findByTitle(title: string): Promise<ISchedule | undefined> {
     return await this.ormRepository.findOne({title})
   }
   async findById(id: string): Promise<Schedule | undefined> {

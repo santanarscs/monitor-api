@@ -1,22 +1,16 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { ISchedule } from "../model/ISchedule";
 import { IJobsCongressRepository } from "../repositories/IJobsCongressRepository";
 import qs from 'qs'
 import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
-import { IItemsJobCongressRepository } from "../repositories/IItemsJobCongressRepository";
-import { IMailProvider } from "../../../providers/MailProvider/models/IMailProvider";
-import path from 'path';
+import { IScheduleCongress } from "../model/IScheduleCongress";
+
 interface IRequest {
-  schedule:ISchedule,
+  schedule: IScheduleCongress,
 }
 
 class RunJobCongressService {
-  constructor(
-    private repository: IJobsCongressRepository,
-    private itemsJobCongress: IItemsJobCongressRepository,
-    private mailProvider: IMailProvider
-    ){}
+  constructor(private repository: IJobsCongressRepository){}
 
 
   private defineRangeDate(type_schedule: string): {initialDate: string, finishDate: string} {
@@ -53,7 +47,12 @@ class RunJobCongressService {
 
     if(schedule.tags) {
       Object.assign(params, {
-        keywords: schedule.tags.map(tag => tag.name)
+        keywords: schedule.tags
+      })
+    }
+    if(schedule.type_proposition) {
+      Object.assign(params, {
+        siglaTipo: schedule.type_proposition.map(type => type.value)
       })
     }
 
@@ -66,6 +65,7 @@ class RunJobCongressService {
     })
     const totalHits = Math.floor(headers['x-total-count'] / 15) + 1
 
+
     let proposicoes = []
     for(let i = 1; i <= totalHits; i++) {
       const response = await api.get('proposicoes', {
@@ -73,6 +73,9 @@ class RunJobCongressService {
           ...params,
           'itens': 15,
           'pagina': i,
+        },
+        paramsSerializer: (params) => {
+          return qs.stringify(params, {indices: false})
         }
       })
       const itens = await Promise.all(
@@ -89,13 +92,6 @@ class RunJobCongressService {
       )
       proposicoes.push(...itens)
     }
-    
-    const job = {
-      date_job: new Date(),
-      schedule_id: schedule.id,
-    }
-    const createdJob = await this.repository.create(job)
-
     const items = proposicoes.map((item: any) => ({
       proposition_id: item.id,
       date_apresentation: new Date(item.dataApresentacao),
@@ -104,34 +100,16 @@ class RunJobCongressService {
       author: item.autores,
       link: `https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=${item.id}`,
       status: item.statusProposicao.descricaoTramitacao,
-      job_congress_id: createdJob.id
     }))
-    await this.itemsJobCongress.createMany(items)
+    
+    const job = {
+      date_job: new Date(),
+      schedule_id: schedule.id,
+      items
+    }
+    const createdJob = await this.repository.create(job)
 
-    const file = path.resolve(
-      __dirname,
-      '..',
-      'views',
-      'job_statistic.hbs',
-    );
-
-    await this.mailProvider.sendMail({
-      subject: "CIGEO",
-      to: {
-        email: 'raphael.santana@presidencia.gov.br',
-        name: 'Raphael Santana'
-      },
-      templateData: {
-        file,
-        variables: {
-          createdJob,
-          items
-        }
-      }
-    })
-
-    return await this.repository.create(createdJob)
-
+    return createdJob
   }
 }
 
