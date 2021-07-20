@@ -1,12 +1,13 @@
+import { ObjectID } from "typeorm";
 import { IItemJobCongress } from "./IItemJobCongress";
 
 interface IJobCongress {
   
-  id: string;
+  id: string | ObjectID; 
  
   date_job: Date;
 
-  schedule_id: string;
+  schedule_id: ObjectID |string;
   
   items: IItemJobCongress[]
  
