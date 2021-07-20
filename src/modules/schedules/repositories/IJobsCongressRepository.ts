@@ -1,12 +1,13 @@
+import { ObjectID } from "typeorm";
 import { IJobCongress } from "../model/IJobCongress";
 
 interface ICreateJobCongressDTO {
   date_job: Date;
-  schedule_id: string;
+  schedule_id: ObjectID | string;
+  items: any[]
 }
 
 interface IJobsCongressRepository {
-  findByText(text: string): Promise<IJobCongress | undefined>
   findById(id: string | any): Promise<IJobCongress | undefined>
   findByScheduleId(schedule_id: string): Promise<IJobCongress[]>
   list(): Promise<IJobCongress[]>
