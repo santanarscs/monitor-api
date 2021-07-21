@@ -1,4 +1,4 @@
-import { IJobCongress } from "@modules/schedules/model/IJobCongress";
+import { IJobCongress, IItemJobCongress } from "@modules/schedules/model/IJobCongress";
 import { Column, CreateDateColumn, Entity, ObjectID, ObjectIdColumn,  UpdateDateColumn } from "typeorm";
 
 @Entity('jobs_congress')
@@ -13,7 +13,10 @@ class JobCongress implements IJobCongress {
   schedule_id: ObjectID |string ;
 
   @Column()
-  items: any[];
+  items: IItemJobCongress[];
+
+  @Column()
+  origin: 'manual' | 'schedule'
 
   @CreateDateColumn()
   created_at: Date;

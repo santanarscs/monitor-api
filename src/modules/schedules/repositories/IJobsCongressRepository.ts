@@ -4,6 +4,7 @@ import { IJobCongress } from "../model/IJobCongress";
 interface ICreateJobCongressDTO {
   date_job: Date;
   schedule_id: ObjectID | string;
+  origin: 'manual' | 'schedule';
   items: any[]
 }
 
