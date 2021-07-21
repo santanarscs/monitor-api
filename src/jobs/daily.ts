@@ -1,12 +1,9 @@
-// import { SchedulesRepository } from '../modules/schedules/infra/typeorm/repositories/SchedulesRepository'
-// import { ListSchedulesByTypeService } from '../modules/schedules/services/ListSchedulesByTypeService'
 import * as cron from 'node-cron'
-
+import { startOfYesterday, format } from 'date-fns'
 import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
-// import { JobsCongressRepository } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepository'
-// import { ItemsJobCongressRepository } from '../modules/schedules/infra/typeorm/repositories/ItemsJobCongressRepository'
-import { HandlebarsMailTemplateProvider } from '../providers/MailTemplateProvider/implementations/HandlebarsMailTemplateProvider'
-import { EtherealMailProvider } from '../providers/MailProvider/implementations/EtherealMailProvider'
+
+import { SchedulesCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/SchedulesCongressRepositoryMongo'
+import { JobsCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepositoryMongo'
 /**
    * 1. buscar todos os agendamentos diarios
    * 2. realizar um request do dia
@@ -16,26 +13,30 @@ import { EtherealMailProvider } from '../providers/MailProvider/implementations/
    * 6. enviar e-mail
 */
 
+cron.schedule('0 7 * * *', async () => {
+  console.log('iniciando processo diário!!')
+  const initialDate = format(startOfYesterday(), 'yyyy-MM-dd')
+  const finishDate = format(startOfYesterday(), 'yyyy-MM-dd')
+  const schedulesCongressRepository = new SchedulesCongressRepositoryMongo()
+  const jobsCongressRepository = new JobsCongressRepositoryMongo()
+  const runJobCongressService = new RunJobCongressService(jobsCongressRepository)
 
-cron.schedule('0 17 * * *', async () => {
-  console.log('iniciando processo!!')
-  // const schedulesRepository = new SchedulesRepository()
-  // const jobsCongressRepository = new JobsCongressRepository()
-  // const itemsJobsCongressRepository = new ItemsJobCongressRepository()
-  // const mailTemplateProvider = new HandlebarsMailTemplateProvider()
-  // const mailProvider = new EtherealMailProvider(mailTemplateProvider)
-  // const listScheduleByTypeScheduleService = new ListSchedulesByTypeService(schedulesRepository)
-  // const runJobCongress = new RunJobCongressService(jobsCongressRepository, itemsJobsCongressRepository, mailProvider)
-  // const schedules = await listScheduleByTypeScheduleService.execute('daily')
-  // if(schedules){
-  //   await Promise.all(
-  //     schedules.map(async (schedule) => {
-  //       if(schedule.target === 'camara_deputados') {
-  //         await runJobCongress.execute({schedule})
-  //       }
-  //     })
-  //   )
-  // }
+  const schedules = await schedulesCongressRepository.findByTypeSchedule('daily')
+
+  if(schedules) {
+    await Promise.all(
+      schedules.map(async (schedule) => {
+        if(schedule.active) {
+          await runJobCongressService.execute({
+            schedule,
+            initialDate,
+            finishDate,
+            origin: 'schedule'
+          })
+        }
+      })
+    )
+  }
 }, {
   scheduled: true,
   timezone: 'America/Sao_Paulo'
