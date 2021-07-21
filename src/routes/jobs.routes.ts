@@ -6,7 +6,7 @@ import { JobsCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/
 import { ListJobsByScheduleCongressService } from '../modules/schedules/services/ListJobsByScheduleCongressService'
 import { FindJobCongressService } from '../modules/schedules/services/FindJobCongressService'
 import { ListJobsCongressService } from '../modules/schedules/services/ListJobsCongressService'
-
+import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 const jobsRoutes = Router()
 
 jobsRoutes.get('/schedule/:schedule_id', async (request: Request, response: Response) => {
@@ -40,7 +40,19 @@ jobsRoutes.post('/run', async (request: Request, response: Response) => {
   
   const runJobCongressService = new RunJobCongressService(jobsCongressRepository)
 
-  const jobs = await runJobCongressService.execute({schedule})
+  let initialDate = format(new Date(), 'yyyy-MM-dd')
+  let finishDate = format(new Date(), 'yyyy-MM-dd')
+  
+  if(schedule.type_schedule === 'weekly') {
+    initialDate = format(startOfWeek(new Date()), 'yyyy-MM-dd')
+    finishDate = format(endOfWeek(new Date()), 'yyyy-MM-dd')
+  }
+  if(schedule.type_schedule === 'monthly') {
+    initialDate = format(startOfMonth(new Date()), 'yyyy-MM-dd')
+    finishDate = format(endOfMonth(new Date()), 'yyyy-MM-dd')
+  }
+
+  const jobs = await runJobCongressService.execute({schedule, initialDate, finishDate, origin: 'manual'})
 
   return response.json(jobs)
 

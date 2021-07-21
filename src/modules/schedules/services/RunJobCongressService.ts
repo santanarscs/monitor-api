@@ -1,40 +1,22 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { IJobsCongressRepository } from "../repositories/IJobsCongressRepository";
+import { ICreateJobCongressDTO, IJobsCongressRepository } from "../repositories/IJobsCongressRepository";
 import qs from 'qs'
-import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 import { IScheduleCongress } from "../model/IScheduleCongress";
+import { IItemJobCongress } from "../model/IJobCongress";
 
 interface IRequest {
   schedule: IScheduleCongress,
+  initialDate: string;
+  finishDate: string;
+  origin: 'manual' | 'schedule'
 }
 
 class RunJobCongressService {
   constructor(private repository: IJobsCongressRepository){}
 
-
-  private defineRangeDate(type_schedule: string): {initialDate: string, finishDate: string} {
-    let initialDate = format(new Date(), 'yyyy-MM-dd')
-    let finishDate = format(new Date(), 'yyyy-MM-dd')
+  async execute({schedule, initialDate, finishDate, origin}: IRequest) {
     
-    if(type_schedule === 'weekly') {
-      initialDate = format(startOfWeek(new Date()), 'yyyy-MM-dd')
-      finishDate = format(endOfWeek(new Date()), 'yyyy-MM-dd')
-    }
-    if(type_schedule === 'monthly') {
-      initialDate = format(startOfMonth(new Date()), 'yyyy-MM-dd')
-      finishDate = format(endOfMonth(new Date()), 'yyyy-MM-dd')
-    }
-    return {
-      initialDate,
-      finishDate,
-    }
-  }
-
-  async execute({schedule}: IRequest) {
-    
-    const { initialDate, finishDate } = this.defineRangeDate(schedule.type_schedule)
-
     const defaultConfig: AxiosRequestConfig = {
       baseURL: 'https://dadosabertos.camara.leg.br/api/v2',
       proxy: false,
@@ -65,7 +47,6 @@ class RunJobCongressService {
     })
     const totalHits = Math.floor(headers['x-total-count'] / 15) + 1
 
-
     let proposicoes = []
     for(let i = 1; i <= totalHits; i++) {
       const response = await api.get('proposicoes', {
@@ -92,7 +73,8 @@ class RunJobCongressService {
       )
       proposicoes.push(...itens)
     }
-    const items = proposicoes.map((item: any) => ({
+
+    const items: IItemJobCongress[] = proposicoes.map((item: any) => ({
       proposition_id: item.id,
       date_apresentation: new Date(item.dataApresentacao),
       type_proposition: item.siglaTipo,
@@ -102,9 +84,10 @@ class RunJobCongressService {
       status: item.statusProposicao.descricaoTramitacao,
     }))
     
-    const job = {
+    const job: ICreateJobCongressDTO = {
       date_job: new Date(),
       schedule_id: schedule.id,
+      origin,
       items
     }
     const createdJob = await this.repository.create(job)
