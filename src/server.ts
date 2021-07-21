@@ -5,7 +5,6 @@ import 'express-async-errors';
 import AppError from './AppError';
 import { schedulesRoutes } from './routes/schedules.routes'
 import { jobsRoutes } from './routes/jobs.routes';
-import { tagsRoutes } from './routes/tags.routes';
 import { representativesRoutes } from './routes/representatives.routes';
 import uploadConfig from './config/upload'
 import cors from 'cors'
@@ -27,8 +26,6 @@ app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use("/schedules", schedulesRoutes)
 
 app.use('/jobs', jobsRoutes)
-
-app.use('/tags', tagsRoutes)
 
 app.use('/representatives', representativesRoutes)
 

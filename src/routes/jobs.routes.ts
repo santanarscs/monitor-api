@@ -3,20 +3,31 @@ import { FindScheduleCongressService } from '../modules/schedules/services/FindS
 import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
 import { Router, Request, Response } from 'express'
 import { JobsCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepositoryMongo'
+import { ListJobsByScheduleCongressService } from '../modules/schedules/services/ListJobsByScheduleCongressService'
+import { FindJobCongressService } from '../modules/schedules/services/FindJobCongressService'
+import { ListJobsCongressService } from '../modules/schedules/services/ListJobsCongressService'
 
 const jobsRoutes = Router()
 
 jobsRoutes.get('/schedule/:schedule_id', async (request: Request, response: Response) => {
   const { schedule_id } = request.params
+  
   const repository = new JobsCongressRepositoryMongo()
-  const job = await repository.findByScheduleId(schedule_id)
-  return response.json(job)
+  const listJobsByScheduleCongressService = new ListJobsByScheduleCongressService(repository)
+  
+  const jobs = await listJobsByScheduleCongressService.execute(schedule_id)
+  
+  return response.json(jobs)
 })
 
 jobsRoutes.get('/:id', async (request: Request, response: Response) => {
   const { id } = request.params
+  
   const repository = new JobsCongressRepositoryMongo()
-  const job = await repository.findById(id)
+  const findJobCongressService = new FindJobCongressService(repository)
+  
+  const job = await findJobCongressService.execute(id)
+  
   return response.json(job)
 })
 jobsRoutes.post('/run', async (request: Request, response: Response) => {
@@ -37,29 +48,11 @@ jobsRoutes.post('/run', async (request: Request, response: Response) => {
 
 jobsRoutes.get('', async (request: Request, response: Response) => {
   const repository = new JobsCongressRepositoryMongo()
-  const jobs = await repository.list()
+  
+  const listJobsCongressService = new ListJobsCongressService(repository)
+  const jobs = await listJobsCongressService.execute()
+  
   return response.json(jobs)
 })
-
-// jobsRoutes.post('', async (request: Request, response: Response) => {
-//   const { schedule_id } = request.body;
-
-//   const repository = new JobsCongressRepositoryMongo()
-//   const job = await repository.create({
-//     date_job: new Date(),
-//     schedule_id,
-//     items: [
-//       {proposition_id: 1242, text: 'alkjasdfkl'},
-//       {proposition_id: 1243, text: 'alkjasdfkl'},
-//       {proposition_id: 1244, text: 'alkjasdfkl'},
-//       {proposition_id: 1245, text: 'alkjasdfkl'},
-//       {proposition_id: 1244, text: 'alkjasdfkl'},
-//       {proposition_id: 1246, text: 'alkjasdfkl'},
-//       {proposition_id: 1245, text: 'alkjasdfkl'},
-//       {proposition_id: 1247, text: 'alkjasdfkl'},
-//     ]
-//   })
-//   return response.json(job)
-// })
 
 export { jobsRoutes }

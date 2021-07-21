@@ -1,7 +1,7 @@
 import { IJobsCongressRepository } from "../repositories/IJobsCongressRepository";
 
 
-class ListJobsByScheduleService {
+class ListJobsByScheduleCongressService {
   constructor(private repository: IJobsCongressRepository) {}
 
   async execute(schedule_id: string) {
@@ -9,4 +9,4 @@ class ListJobsByScheduleService {
   }
 }
 
-export { ListJobsByScheduleService }
+export { ListJobsByScheduleCongressService }
