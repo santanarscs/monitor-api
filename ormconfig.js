@@ -23,7 +23,7 @@ const prodConfig = [
     database: 'monitor',
     useUnifiedTopology: true,
     entities: [
-      './src/modules/**/infra/typeorm/schemas/*.ts'
+      './dist/modules/**/infra/typeorm/schemas/*.js'
     ]
   }
 ]
