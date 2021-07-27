@@ -8,9 +8,7 @@ import { FindJobCongressService } from '../modules/schedules/services/FindJobCon
 import { ListJobsCongressService } from '../modules/schedules/services/ListJobsCongressService'
 import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 
-import PDFPrinter from 'pdfmake'
-import { TDocumentDefinitions, TableCell } from 'pdfmake/interfaces'
-
+import { CreateReportJobCongressService } from '../modules/schedules/services/CreateReportJobCongressService'
 const jobsRoutes = Router()
 
 jobsRoutes.get('/schedule/:schedule_id', async (request: Request, response: Response) => {
@@ -33,27 +31,27 @@ jobsRoutes.post('/:id/report', async(request: Request, response:Response) => {
 
   // aplicar filtros
 
-  let partialJob: any[] = []
+  let partialItems: any[] = []
   if(filterData.type_proposition?.length) {
     filterData.type_proposition.forEach((type: any) => {
-      const filteredJob = job.items.filter(job => job.type_proposition === type.value)
-      partialJob.push(...filteredJob)
+      const filteredItem = job.items.filter(job => job.type_proposition === type.value)
+      partialItems.push(...filteredItem)
     })
   }
   if(filterData.status?.length) {
     filterData.status.forEach((status: any) => {
-      const filteredJob = job.items.filter(job => job.status === status.value)
-      partialJob.push(...filteredJob)
+      const filteredItem = job.items.filter(job => job.status === status.value)
+      partialItems.push(...filteredItem)
     })
   }
   if(filterData.author?.length) {
     filterData.status.forEach((author: any) => {
-      const filteredJob = job.items.filter(job => job.author === author.value)
-      partialJob.push(...filteredJob)
+      const filteredItem = job.items.filter(job => job.author === author.value)
+      partialItems.push(...filteredItem)
     })
   }
-  const finalJobs =  partialJob.length
-  ? partialJob.filter((item, index, self) =>
+  const finalItems =  partialItems.length
+  ? partialItems.filter((item, index, self) =>
     index === self.findIndex((t) => (
       t.text === item.text
     ))
@@ -75,103 +73,13 @@ jobsRoutes.post('/:id/report', async(request: Request, response:Response) => {
       }
       return 0
     })
-  
 
-  const fonts = {
-    Helvetica: {
-      normal: 'Helvetica',
-      bold: 'Helvetica-Bold',
-      italics: 'Helvetica-Oblique',
-      bolditalics: 'Helvetica-BoldOblique'
-    },
-  }
-  const printer = new PDFPrinter(fonts)
+  const createReportJobCongressService = new CreateReportJobCongressService()
+  const pdfDoc = await createReportJobCongressService.execute({
+    job,
+    items: finalItems,
+  })
 
-  const body = []
-
-  const columnsTitle: TableCell[] = [
-    {text: 'NÚMERO', style: 'columnsTitle'},
-    {text: 'TIPO', style: 'columnsTitle'},
-    {text: 'APRESENTAÇÃO', style: 'columnsTitle'},
-    {text: 'TEXTO', style: 'columnsTitle'},
-    {text: 'STATUS', style: 'columnsTitle'},
-    {text: 'AUTOR', style: 'columnsTitle'}
-  ]
-
-  const columnsBody =  new Array();
-  columnsTitle.forEach(column => columnsBody.push(column))
-  body.push(columnsTitle)
-
-  for await (let item of finalJobs) {
-    const formattedDate = new Intl.DateTimeFormat('pt-BR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(new Date(item.date_apresentation))
-    const row = new Array()
-
-    row.push({text: item.proposition_id, link: item.link, color: 'blue', bold: true, nodeName: 'A', style: ["html-strong", "html-a", "html-p", 'columnBody']})
-    row.push({text: item.type_proposition, style: 'columnBody'})
-    row.push({text: formattedDate, style: 'columnBody'})
-    row.push({text: item.text, style: 'columnBody'})
-    row.push({text: item.status, style: 'columnBody'})
-    row.push({text: item.author, style: 'columnBody'})
-    body.push(row)
-  }
-
-  const dateJobFormatted = new Intl.DateTimeFormat('pt-BR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(job.date_job))
-  
-  const today = new Intl.DateTimeFormat('pt-BR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date())
-
-  const docDefinitions: TDocumentDefinitions = {
-    defaultStyle: {font: 'Helvetica'},
-    pageOrientation: 'landscape',
-    content: [
-      {
-        columns: [
-          [
-            {text: 'Relatório câmara dos deputados', bold: true, margin: [0,0,0,0], fontSize:16},
-            {text: `Trabalho do dia ${dateJobFormatted}`, bold: true, margin: [0,5,0,10]},
-          ],
-          [
-            {text: today, style: 'titlePage', alignment: 'right',margin: [0,0,0,0]},
-            {text: `${finalJobs.length} Registros`, alignment: 'right', margin: [0,5,0,10]}
-          ]
-        ]
-      },
-      {
-        table: {
-          headerRows: 1,
-          body
-        },
-      }
-    ],
-    styles: {
-      header: {
-
-      },
-      columnsTitle: {
-        fontSize: 8,
-        bold: true,
-        alignment: 'center',
-        margin: [0, 5, 0, 10]
-      },
-      columnBody: {
-        margin: [0, 5, 0, 0],
-        lineHeight: 1.5
-      }
-    }
-  }
-
-  const pdfDoc = printer.createPdfKitDocument(docDefinitions)
   const chunks: any = []
   
   pdfDoc.on("data", (chunk) => {
@@ -179,7 +87,7 @@ jobsRoutes.post('/:id/report', async(request: Request, response:Response) => {
   })
   pdfDoc.end()
 
-  pdfDoc.on('end', () => {
+  pdfDoc.on('end', async () => {
     const result = Buffer.concat(chunks)
     response.end(result)
   })
