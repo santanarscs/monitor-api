@@ -8,12 +8,10 @@
 </style>
 
 <div class="message-content">
-  <p>Ola,</p>
+  <p>Ola, {{name}}</p>
   <p>Este é o relatório do seu agendamento no sistema Monitor</p>
-  
-  <p>Foram encontrados {{items.length}}</p>
   <p>
-    <a href="http://localhost:3003">Voce pode clicar aqui e conferir no seu painel de controle.</a>
+    <a href={{process.env.APP_WEB_URL}}>Voce pode clicar aqui e conferir no seu painel de controle.</a>
   </p>
   <p>
     Obrigado! <br>
