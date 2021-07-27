@@ -1,5 +1,5 @@
 import { ISchedulesCongressRepository, IFindScheduleDTO, ICreateScheduleCongressDTO } from '@modules/schedules/repositories/ISchedulesCongressRepository';
-import { getMongoRepository, MongoRepository, ObjectID } from 'typeorm'
+import { getMongoRepository, MongoRepository } from 'typeorm'
 import { ScheduleCongress } from '../schemas/ScheduleCongress';
 
 class SchedulesCongressRepositoryMongo implements ISchedulesCongressRepository {
@@ -10,7 +10,7 @@ class SchedulesCongressRepositoryMongo implements ISchedulesCongressRepository {
   }
   
   async findByTypeSchedule(type_schedule: 'daily' | 'monthly'| 'weekly'): Promise<ScheduleCongress[]> {
-    return await this.ormRepository.find({type_schedule})
+    return await this.ormRepository.find({type_schedule, active: true})
   }
   
   async findById(id: string): Promise<ScheduleCongress | undefined> {
