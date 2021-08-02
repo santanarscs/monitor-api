@@ -1,6 +1,6 @@
 import { ObjectID } from "typeorm";
 
-interface IItemJobCongress {
+interface IItemJob {
 
   proposition_id: string;
 
@@ -17,7 +17,7 @@ interface IItemJobCongress {
   status: string;
 }
 
-interface IJobCongress {
+interface IJob {
   
   id: string | ObjectID; 
  
@@ -27,7 +27,7 @@ interface IJobCongress {
 
   origin: 'manual' | 'schedule';
   
-  items: IItemJobCongress[]
+  items: IItemJob[]
  
   created_at: Date;
 
@@ -35,4 +35,4 @@ interface IJobCongress {
 
 }
 
-export { IJobCongress, IItemJobCongress }
+export { IJob, IItemJob }

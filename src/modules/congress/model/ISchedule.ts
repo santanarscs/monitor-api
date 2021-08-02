@@ -5,7 +5,7 @@ type TypeOption = {
   value: string;
 }
 
-interface IScheduleCongress{
+interface ISchedule{
   id: ObjectID;
 
   name: string;
@@ -25,4 +25,4 @@ interface IScheduleCongress{
   updated_at: Date;
 }
 
-export { IScheduleCongress, TypeOption }
+export { ISchedule, TypeOption }

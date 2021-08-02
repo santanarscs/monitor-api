@@ -1,23 +1,23 @@
-import { SchedulesCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/SchedulesCongressRepositoryMongo'
-import { FindScheduleCongressService } from '../modules/schedules/services/FindScheduleCongressService'
-import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
+import { SchedulesRepository } from '../modules/congress/infra/typeorm/repositories/SchedulesRepository'
+import { FindScheduleService } from '../modules/congress/services/FindScheduleService'
+import { RunJobService } from '../modules/congress/services/RunJobService'
 import { Router, Request, Response } from 'express'
-import { JobsCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepositoryMongo'
-import { ListJobsByScheduleCongressService } from '../modules/schedules/services/ListJobsByScheduleCongressService'
-import { FindJobCongressService } from '../modules/schedules/services/FindJobCongressService'
-import { ListJobsCongressService } from '../modules/schedules/services/ListJobsCongressService'
+import { JobsRepository } from '../modules/congress/infra/typeorm/repositories/JobsRepository'
+import { ListJobsByScheduleService } from '../modules/congress/services/ListJobsByScheduleService'
+import { FindJobService } from '../modules/congress/services/FindJobService'
+import { ListJobsService } from '../modules/congress/services/ListJobsService'
 import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 
-import { CreateReportJobCongressService } from '../modules/schedules/services/CreateReportJobCongressService'
+import { CreateReportJobService } from '../modules/congress/services/CreateReportJobService'
 const jobsRoutes = Router()
 
 jobsRoutes.get('/schedule/:schedule_id', async (request: Request, response: Response) => {
   const { schedule_id } = request.params
   
-  const repository = new JobsCongressRepositoryMongo()
-  const listJobsByScheduleCongressService = new ListJobsByScheduleCongressService(repository)
+  const repository = new JobsRepository()
+  const listJobsByScheduleService = new ListJobsByScheduleService(repository)
   
-  const jobs = await listJobsByScheduleCongressService.execute(schedule_id)
+  const jobs = await listJobsByScheduleService.execute(schedule_id)
   
   return response.json(jobs)
 })
@@ -25,9 +25,9 @@ jobsRoutes.get('/schedule/:schedule_id', async (request: Request, response: Resp
 jobsRoutes.post('/:id/report', async(request: Request, response:Response) => {
   const {id} = request.params
   const { filterData } = request.body
-  const repository = new JobsCongressRepositoryMongo()
-  const findJobCongressService = new FindJobCongressService(repository)
-  const job = await findJobCongressService.execute(id)
+  const repository = new JobsRepository()
+  const findJobService = new FindJobService(repository)
+  const job = await findJobService.execute(id)
 
   // aplicar filtros
 
@@ -74,8 +74,8 @@ jobsRoutes.post('/:id/report', async(request: Request, response:Response) => {
       return 0
     })
 
-  const createReportJobCongressService = new CreateReportJobCongressService()
-  const pdfDoc = await createReportJobCongressService.execute({
+  const createReportJobService = new CreateReportJobService()
+  const pdfDoc = await createReportJobService.execute({
     job,
     items: finalItems,
   })
@@ -96,23 +96,23 @@ jobsRoutes.post('/:id/report', async(request: Request, response:Response) => {
 jobsRoutes.get('/:id', async (request: Request, response: Response) => {
   const { id } = request.params
   
-  const repository = new JobsCongressRepositoryMongo()
-  const findJobCongressService = new FindJobCongressService(repository)
+  const repository = new JobsRepository()
+  const findJobService = new FindJobService(repository)
   
-  const job = await findJobCongressService.execute(id)
+  const job = await findJobService.execute(id)
   
   return response.json(job)
 })
 
 jobsRoutes.post('/run', async (request: Request, response: Response) => {
   const { schedule_id } = request.body
-  const schedulesCongressRepository = new SchedulesCongressRepositoryMongo()
-  const jobsCongressRepository = new JobsCongressRepositoryMongo()
+  const schedulesRepository = new SchedulesRepository()
+  const jobsRepository = new JobsRepository()
 
-  const findScheduleService = new FindScheduleCongressService(schedulesCongressRepository)
+  const findScheduleService = new FindScheduleService(schedulesRepository)
   const schedule = await findScheduleService.execute(schedule_id)
   
-  const runJobCongressService = new RunJobCongressService(jobsCongressRepository)
+  const runJobService = new RunJobService(jobsRepository)
 
   let initialDate = format(new Date(), 'yyyy-MM-dd')
   let finishDate = format(new Date(), 'yyyy-MM-dd')
@@ -126,17 +126,17 @@ jobsRoutes.post('/run', async (request: Request, response: Response) => {
     finishDate = format(endOfMonth(new Date()), 'yyyy-MM-dd')
   }
 
-  const jobs = await runJobCongressService.execute({schedule, initialDate, finishDate, origin: 'manual'})
+  const jobs = await runJobService.execute({schedule, initialDate, finishDate, origin: 'manual'})
 
   return response.json(jobs)
 
 })
 
 jobsRoutes.get('', async (request: Request, response: Response) => {
-  const repository = new JobsCongressRepositoryMongo()
+  const repository = new JobsRepository()
   
-  const listJobsCongressService = new ListJobsCongressService(repository)
-  const jobs = await listJobsCongressService.execute()
+  const listJobsService = new ListJobsService(repository)
+  const jobs = await listJobsService.execute()
   
   return response.json(jobs)
 })

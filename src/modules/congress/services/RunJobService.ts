@@ -1,19 +1,19 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { ICreateJobCongressDTO, IJobsCongressRepository } from "../repositories/IJobsCongressRepository";
+import { ICreateJobDTO, IJobsRepository } from "../repositories/IJobsRepository";
 import qs from 'qs'
-import { IScheduleCongress } from "../model/IScheduleCongress";
-import { IItemJobCongress } from "../model/IJobCongress";
+import { ISchedule } from "../model/ISchedule";
+import { IItemJob } from "../model/IJob";
 
 interface IRequest {
-  schedule: IScheduleCongress,
+  schedule: ISchedule,
   initialDate: string;
   finishDate: string;
   origin: 'manual' | 'schedule'
 }
 
-class RunJobCongressService {
-  constructor(private repository: IJobsCongressRepository){}
+class RunJobService {
+  constructor(private repository: IJobsRepository){}
 
   async execute({schedule, initialDate, finishDate, origin}: IRequest) {
     
@@ -74,7 +74,7 @@ class RunJobCongressService {
       proposicoes.push(...itens)
     }
 
-    const items: IItemJobCongress[] = proposicoes.map((item: any) => ({
+    const items: IItemJob[] = proposicoes.map((item: any) => ({
       proposition_id: item.id,
       date_apresentation: new Date(item.dataApresentacao),
       type_proposition: item.siglaTipo,
@@ -84,7 +84,7 @@ class RunJobCongressService {
       status: item.statusProposicao.descricaoTramitacao,
     }))
     
-    const job: ICreateJobCongressDTO = {
+    const job: ICreateJobDTO = {
       date_job: new Date(),
       schedule_id: schedule.id,
       origin,
@@ -96,4 +96,4 @@ class RunJobCongressService {
   }
 }
 
-export { RunJobCongressService }
+export { RunJobService }

@@ -1,11 +1,11 @@
 import * as cron from 'node-cron'
 import { startOfYesterday, format } from 'date-fns'
-import { RunJobCongressService } from '../modules/schedules/services/RunJobCongressService'
+import { RunJobService } from '../modules/congress/services/RunJobService'
 import { resolve } from 'path'
-import { SchedulesCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/SchedulesCongressRepositoryMongo'
-import { JobsCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/JobsCongressRepositoryMongo'
+import { SchedulesRepository } from '../modules/congress/infra/typeorm/repositories/SchedulesRepository'
+import { JobsRepository } from '../modules/congress/infra/typeorm/repositories/JobsRepository'
 
-import { CreateReportJobCongressService } from '../modules/schedules/services/CreateReportJobCongressService'
+import { CreateReportJobService } from '../modules/congress/services/CreateReportJobService'
 import { EtherealMailProvider } from '../providers/MailProvider/implementations/EtherealMailProvider'
 import { HandlebarsMailTemplateProvider } from '../providers/MailTemplateProvider/implementations/HandlebarsMailTemplateProvider'
 
@@ -27,10 +27,10 @@ cron.schedule('0 7 * * *', async () => {
 
   const initialDate = format(startOfYesterday(), 'yyyy-MM-dd')
   const finishDate = format(startOfYesterday(), 'yyyy-MM-dd')
-  const schedulesCongressRepository = new SchedulesCongressRepositoryMongo()
-  const jobsCongressRepository = new JobsCongressRepositoryMongo()
-  const runJobCongressService = new RunJobCongressService(jobsCongressRepository)
-  const createReportService = new CreateReportJobCongressService()
+  const schedulesCongressRepository = new SchedulesRepository()
+  const jobsCongressRepository = new JobsRepository()
+  const runJobService = new RunJobService(jobsCongressRepository)
+  const createReportService = new CreateReportJobService()
   const mailTemplateProvider = new HandlebarsMailTemplateProvider()
   const mailProvider = new EtherealMailProvider(mailTemplateProvider)
   const schedules = await schedulesCongressRepository.findByTypeSchedule('daily')
@@ -39,7 +39,7 @@ cron.schedule('0 7 * * *', async () => {
   await Promise.all(
     schedules.map(async (schedule) => {
 
-      const createdJob = await runJobCongressService.execute({
+      const createdJob = await runJobService.execute({
         schedule,
         initialDate,
         finishDate,

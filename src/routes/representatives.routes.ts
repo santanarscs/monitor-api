@@ -1,6 +1,6 @@
-import { ListRepresentativesService } from '../modules/schedules/services/ListRepresentativesService'
+import { ListRepresentativesService } from '../modules/congress/services/ListRepresentativesService'
 import { Router, Request, Response } from 'express'
-import { DetailRepresentativeService } from '../modules/schedules/services/DetailRepresentativeService'
+import { DetailRepresentativeService } from '../modules/congress/services/DetailRepresentativeService'
 
 const representativesRoutes = Router()
 

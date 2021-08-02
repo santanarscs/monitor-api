@@ -1,8 +1,8 @@
-import { IScheduleCongress, TypeOption } from "@modules/schedules/model/IScheduleCongress";
+import { ISchedule, TypeOption } from "../../../model/ISchedule";
 import { Column, CreateDateColumn, Entity, ObjectID, ObjectIdColumn,  UpdateDateColumn } from "typeorm";
 
 @Entity('schedules_congress')
-class ScheduleCongress implements IScheduleCongress{
+class Schedule implements ISchedule{
   @ObjectIdColumn()
   id: ObjectID;
 
@@ -31,4 +31,4 @@ class ScheduleCongress implements IScheduleCongress{
   updated_at: Date;
 }
 
-export { ScheduleCongress }
+export { Schedule }

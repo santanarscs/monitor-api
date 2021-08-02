@@ -1,5 +1,5 @@
-import { IScheduleCongress, TypeOption } from "../model/IScheduleCongress";
-import { ISchedulesCongressRepository } from "../repositories/ISchedulesCongressRepository";
+import { ISchedule, TypeOption } from "../model/ISchedule";
+import { ISchedulesRepository } from "../repositories/ISchedulesRepository";
 
 class IRequest {
   id: string;
@@ -15,11 +15,11 @@ class IRequest {
   active: boolean;
 }
 
-class UpdateScheduleCongressService {
+class UpdateScheduleService {
   constructor(
-    private repository: ISchedulesCongressRepository) {}
+    private repository: ISchedulesRepository) {}
 
-  async execute({id, name, type_proposition, type_schedule, tags, active }: IRequest): Promise<IScheduleCongress> {
+  async execute({id, name, type_proposition, type_schedule, tags, active }: IRequest): Promise<ISchedule> {
     const schedule = await this.repository.findById(id);
 
     if(!schedule) {
@@ -34,4 +34,4 @@ class UpdateScheduleCongressService {
   }
 }
 
-export { UpdateScheduleCongressService }
+export { UpdateScheduleService }

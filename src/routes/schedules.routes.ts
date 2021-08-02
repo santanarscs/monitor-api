@@ -1,27 +1,27 @@
-import { FindScheduleCongressService } from '../modules/schedules/services/FindScheduleCongressService'
+import { FindScheduleService } from '../modules/congress/services/FindScheduleService'
 import { Router, Request, Response } from 'express'
-import { SchedulesCongressRepositoryMongo } from '../modules/schedules/infra/typeorm/repositories/SchedulesCongressRepositoryMongo'
-import { ListSchedulesCongressService } from '../modules/schedules/services/ListSchedulesCongressService'
-import { CreateScheduleCongressService } from '../modules/schedules/services/CreateScheduleCongressService'
-import { UpdateScheduleCongressService } from '../modules/schedules/services/UpdateScheduleCongressService'
-import { DeleteScheduleCongressService } from '../modules/schedules/services/DeleteScheduleCongressService'
+import { SchedulesRepository } from '../modules/congress/infra/typeorm/repositories/SchedulesRepository'
+import { ListSchedulesService } from '../modules/congress/services/ListSchedulesService'
+import { CreateScheduleService } from '../modules/congress/services/CreateScheduleService'
+import { UpdateScheduleService } from '../modules/congress/services/UpdateScheduleService'
+import { DeleteScheduleService } from '../modules/congress/services/DeleteScheduleService'
 const schedulesRoutes = Router()
 
 schedulesRoutes.get('/:id', async (request: Request, response: Response) => {
   const { id } = request.params
-  const repository = new SchedulesCongressRepositoryMongo()
-  const findScheduleCongressService = new FindScheduleCongressService(repository)
-  const schedule = await findScheduleCongressService.execute(id)
+  const repository = new SchedulesRepository()
+  const findScheduleService = new FindScheduleService(repository)
+  const schedule = await findScheduleService.execute(id)
   return response.status(200).json(schedule)
 })
 
 schedulesRoutes.get('', async (request: Request, response: Response) => {
   const{ owner_id } = request.query
   
-  const repository = new SchedulesCongressRepositoryMongo()
-  const listSchedulesCongressService = new ListSchedulesCongressService(repository)
+  const repository = new SchedulesRepository()
+  const listSchedulesService = new ListSchedulesService(repository)
   
-  const schedules = await listSchedulesCongressService.execute({
+  const schedules = await listSchedulesService.execute({
     owner_id: String(owner_id)
   })
 
@@ -31,10 +31,10 @@ schedulesRoutes.get('', async (request: Request, response: Response) => {
 schedulesRoutes.post('', async (request: Request, response: Response) => {
   const {name, type_proposition, type_schedule, tags, owner_id, active } = request.body
   
-  const repository = new SchedulesCongressRepositoryMongo()
-  const createScheduleCongressService = new CreateScheduleCongressService(repository)
+  const repository = new SchedulesRepository()
+  const createScheduleService = new CreateScheduleService(repository)
   
-  const schedule = await createScheduleCongressService.execute({name, type_proposition, type_schedule, tags, owner_id, active});
+  const schedule = await createScheduleService.execute({name, type_proposition, type_schedule, tags, owner_id, active});
   
   return response.json(schedule)
 })
@@ -43,10 +43,10 @@ schedulesRoutes.put('/:id', async (request: Request, response: Response) => {
   const {name, type_proposition, type_schedule, tags, active } = request.body
   const { id } = request.params
   
-  const repository = new SchedulesCongressRepositoryMongo()
-  const updateScheduleCongressService = new UpdateScheduleCongressService(repository)
+  const repository = new SchedulesRepository()
+  const updateScheduleService = new UpdateScheduleService(repository)
 
-  const updatedSchedule = await updateScheduleCongressService.execute({id, name, type_proposition, type_schedule, tags, active});
+  const updatedSchedule = await updateScheduleService.execute({id, name, type_proposition, type_schedule, tags, active});
   
   return response.json(updatedSchedule)
 })
@@ -54,10 +54,10 @@ schedulesRoutes.put('/:id', async (request: Request, response: Response) => {
 schedulesRoutes.delete('/:id', async (request: Request, response: Response) => {
   const { id } = request.params;
   
-  const repository = new SchedulesCongressRepositoryMongo()
-  const deleteScheduleCongressService = new DeleteScheduleCongressService(repository)
+  const repository = new SchedulesRepository()
+  const deleteScheduleService = new DeleteScheduleService(repository)
   
-  await deleteScheduleCongressService.execute(id);
+  await deleteScheduleService.execute(id);
   
   return response.send()
 })

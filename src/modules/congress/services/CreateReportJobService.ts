@@ -1,12 +1,12 @@
 import PDFPrinter from 'pdfmake'
 import { TDocumentDefinitions, TableCell } from 'pdfmake/interfaces'
-import { IItemJobCongress, IJobCongress } from '../model/IJobCongress'
+import { IItemJob, IJob } from '../model/IJob'
 
 interface IRequest {
-  job: IJobCongress,
-  items: IItemJobCongress[]
+  job: IJob,
+  items: IItemJob[]
 }
-class CreateReportJobCongressService {
+class CreateReportJobService {
   async execute({
     job,
     items
@@ -109,4 +109,4 @@ class CreateReportJobCongressService {
   }
 }
 
-export { CreateReportJobCongressService }
+export { CreateReportJobService }
