@@ -5,6 +5,7 @@ async function getTokenKeycloak() {
   try {
     const defaultConfig: AxiosRequestConfig = {
       baseURL: process.env.KEYCLOAK_BASE_URL,
+      proxy: false,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -31,7 +32,10 @@ async function getTokenKeycloak() {
 
 async function getUsers(token: string) {
   try {
-    const api = axios.create()
+    const defaultConfig: AxiosRequestConfig = {
+      proxy: false
+    }
+    const api = axios.create(defaultConfig)
     api.defaults.headers.Authorization = `Bearer ${token}`;
     const { data } = await api.get(`${process.env.KEYCLOAK_BASE_URL}/auth/admin/realms/CIGEO/users`)
     return data;
