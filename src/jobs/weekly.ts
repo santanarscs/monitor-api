@@ -67,7 +67,7 @@ cron.schedule('0 7 * * 5', async () => {
       pdfDoc.on('end', async () => {
         const result = Buffer.concat(chunks)
         const attachments = [
-          {filename: 'Relatorio_semanal_camara_deptuados', content: result }
+          {filename: 'Relatorio_semanal_camara_deptuados.pdf', content: result }
         ]
 
         const file = resolve(
