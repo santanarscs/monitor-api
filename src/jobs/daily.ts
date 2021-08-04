@@ -45,6 +45,7 @@ cron.schedule('0 7 * * *', async () => {
         finishDate,
         origin: 'schedule'
       })
+      if(!createdJob.items) return;
 
       const user = users.find((user: any) => user.id === schedule.owner_id)
 

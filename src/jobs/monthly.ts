@@ -56,6 +56,8 @@ cron.schedule('0 7 30 * *', async () => {
         items: createdJob.items
       })
 
+      if(!createdJob.items) return;
+
       const chunks: any = []
 
       pdfDoc.on("data", (chunk) => {

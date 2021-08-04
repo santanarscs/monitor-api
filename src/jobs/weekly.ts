@@ -49,6 +49,8 @@ cron.schedule('0 7 * * 5', async () => {
         origin: 'schedule'
       })
 
+      if(!createdJob.items) return;
+
       const user = users.find((user: any) => user.id === schedule.owner_id)
 
       const pdfDoc = await createReportService.execute({
