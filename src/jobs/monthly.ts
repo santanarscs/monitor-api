@@ -12,12 +12,12 @@ import { HandlebarsMailTemplateProvider } from '../providers/MailTemplateProvide
 import {getTokenKeycloak, getUsers} from './utils'
 
 /**
- * 
+ *
    * 1. buscar todos os agendamentos diarios
    * 2. realizar um request do dia
-   * 3. iterar sobre array de agendamentos buscando por termos 
+   * 3. iterar sobre array de agendamentos buscando por termos
    * 4. Agregar mais valor non registro que foi encontnrato
-   * 5. salvar na base de dados 
+   * 5. salvar na base de dados
    * 6. enviar e-mail
 */
 
@@ -56,7 +56,7 @@ cron.schedule('0 7 30 * *', async () => {
         items: createdJob.items
       })
 
-      if(!createdJob.items) return;
+      if(!createdJob.items.length) return
 
       const chunks: any = []
 
@@ -80,7 +80,7 @@ cron.schedule('0 7 30 * *', async () => {
           'views',
           'job_statistic.hbs',
         );
-    
+
         await mailProvider.sendMail({
           subject: 'CIGEO',
           to: {

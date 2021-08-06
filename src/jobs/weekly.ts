@@ -15,9 +15,9 @@ import {getTokenKeycloak, getUsers} from './utils'
 /**
    * 1. buscar todos os agendamentos diarios
    * 2. realizar um request do dia
-   * 3. iterar sobre array de agendamentos buscando por termos 
+   * 3. iterar sobre array de agendamentos buscando por termos
    * 4. Agregar mais valor non registro que foi encontnrato
-   * 5. salvar na base de dados 
+   * 5. salvar na base de dados
    * 6. enviar e-mail
 */
 
@@ -49,7 +49,7 @@ cron.schedule('0 7 * * 5', async () => {
         origin: 'schedule'
       })
 
-      if(!createdJob.items) return;
+      if(!createdJob.items.length) return
 
       const user = users.find((user: any) => user.id === schedule.owner_id)
 
@@ -80,7 +80,7 @@ cron.schedule('0 7 * * 5', async () => {
           'views',
           'job_statistic.hbs',
         );
-    
+
         await mailProvider.sendMail({
           subject: 'CIGEO',
           to: {
@@ -99,7 +99,7 @@ cron.schedule('0 7 * * 5', async () => {
       })
     })
   )
-  
+
 }, {
   scheduled: true,
   timezone: 'America/Sao_Paulo'
