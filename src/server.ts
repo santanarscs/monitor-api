@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
+import swaggerUi from 'swagger-ui-express'
 import 'express-async-errors';
 import AppError from './AppError';
 import { schedulesRoutes } from './routes/schedules.routes'
@@ -11,6 +12,7 @@ import cors from 'cors'
 import './database';
 
 import './providers/MailProvider'
+import swaggerFile from './swagger.json'
 
 import './jobs/daily'
 import './jobs/monthly'
@@ -21,6 +23,7 @@ app.use(cors({
   exposedHeaders: ['x-total-count'],
 }))
 app.use(express.json())
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use('/files', express.static(uploadConfig.uploadsFolder));
 
 app.use("/schedules", schedulesRoutes)

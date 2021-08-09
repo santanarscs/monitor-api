@@ -1,0 +1,56 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Monitor API Documentation",
+    "description": "This is an API Monitor",
+    "version": "1.0.0",
+    "contact": {
+      "email": "raphael.santana@presidencia.gov.br"
+    }
+  },
+  "paths" :{
+    "/schedules": {
+      "post": {
+        "summary": "Create a schedule",
+        "description": "Create a new schedule",
+        "requestBody":{
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type":  "string"
+                  },
+                  "type_proposition": {
+                    "type":  "TypeOption[]"
+                  },
+                  "type_schedule": {
+                    "type":  "'daily' | 'monthly'| 'weekly'"
+                  },
+                  "owner_id": {
+                    "type":  "string"
+                  },
+                  "tags": {
+                    "type":  "string[]"
+                  },
+                  "active": {
+                    "type":  "boolean"
+                  }
+                },
+                "example": {
+                  "name": "ScheduleTest",
+                  "type_proposition": [{"name": "PDL", "value": "PDL"}],
+                  "type_schedule": "daily",
+                  "owner_id": "UUID",
+                  "tags": ["Primeira Tag", "Segunda Tag"],
+                  "active": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
